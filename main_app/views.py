@@ -14,15 +14,18 @@ S3_BASE_URL = 'https://s3.us-west-1.amazonaws.com/'
 BUCKET = 'buckets-mlr'
 
 
-class BirdCreate(CreateView):
+class BirdCreate(LoginRequiredMixin,CreateView):
   model = Bird
-  fields = ['name', 'breed', 'description', 'age']
+  fields = ['name', 'breed', 'description', 'age' ]
+  def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
-class BirdUpdate(UpdateView):
+class BirdUpdate(LoginRequiredMixin,UpdateView):
   model = Bird
   fields = ['breed', 'description', 'age']
 
-class BirdDelete(DeleteView):
+class BirdDelete(LoginRequiredMixin,DeleteView):
   model = Bird
   success_url = '/birds/'
   
